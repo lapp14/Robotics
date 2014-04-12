@@ -1,0 +1,1 @@
+nxjupload -r %1.nxj
