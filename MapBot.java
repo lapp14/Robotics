@@ -8,7 +8,7 @@ public class MapBot{
 	private static CompassHTSensor compass;
 	private static NXTRegulatedMotor motorLeft, motorRight;
 	
-	Node start;
+	Node start, current;
 	
 	public MapBot(){
 		ultrasonic = new UltrasonicSensor(SensorPort.S1);
@@ -17,6 +17,7 @@ public class MapBot{
 		motorRight = new NXTRegulatedMotor(MotorPort.A);
 				
 		start = new Node();
+		current = start;
 	}
 	
 	public void search(){
@@ -61,146 +62,45 @@ public class MapBot{
 	}
 	
 	class Node{
-		public byte[] data;
+		
+		public BitSet data;
 		public Node north, south, east, west;
 		
-		/* Represents a 16x16 bit array
-		 * The bytes are assumed to be in the following orientation
-		 *  [0] [1]
-		 *  [2] [3]
-		 *   .   .
-		 *   .   .
-		 *  [14][15]
-		 */
+		/**
+		 *	The Bitset represents a 16x16 array of bits, in a single dimension
+		 **/
 		
 		public Node(){
-			data = new byte[32];
+			data = new BitSet(256);
 		}
 		
-		public byte getBit(int x, int y){		
-			int byteIndex = x * 2;
-			
-			if(y > 7){
-				x++;
-				y -= 8;
-			}
-			
-			switch(y){
-				// 1000 0000
-				case 0:
-					if(data[byteIndex] & 0x989680 == 0)
-						return 0;
-					break;
-					
-				// 0100 0000
-				case 1:
-					if(data[byteIndex] & 0x40 == 0)
-						return 0;
-					break;
-				
-				// 0010 0000
-				case 2:
-					if(data[byteIndex] & 0x20 == 0)
-						return 0;
-					break;
-					
-				// 0001 0000
-				case 3:
-					if(data[byteIndex] & 0x10 == 0)
-						return 0;
-					break;
-					
-				// 0000 1000
-				case 4:
-					if(data[byteIndex] & 0x8 == 0)
-						return 0;
-					break;
-					
-				// 0000 0100
-				case 5:
-					if(data[byteIndex] & 0x4 == 0)
-						return 0;
-					break;
-					
-				// 0000 0010
-				case 6:
-					if(data[byteIndex] & 0x2 == 0)
-						return 0;
-					break;
-					
-				// 0000 0001
-				case 7:
-					if(data[byteIndex] & 0x1 == 0)
-						return 0;
-					break;
-			}
-			
-			return 1;
+		/**
+		 *	Simple method to get the single dimensional index from x, y values
+		 */
+		public static int getIndex(int x, int y){
+			return x * 16 + y;
 		}
-		
-		public void setBit(int x, int y, boolean value){		
-			int byteIndex = x * 2;
-			
-			if(y > 7){
-				x++;
-				y -= 8;
-			}
-			
-			switch(y){
-				case 0:
-					if(value)// 1000 0000
-						data[byteIndex] | 0x989680;
-					else // 0111 1111
-						data[byteIndex] & 0x7f;
-					break;
-					
-				// 0100 0000
-				case 1:
-					
-				
-					if(data[byteIndex] & 0x40 == 0)
-						return 0;
-					break;
-				
-				// 0010 0000
-				case 2:
-					if(data[byteIndex] & 0x20 == 0)
-						return 0;
-					break;
-					
-				// 0001 0000
-				case 3:
-					if(data[byteIndex] & 0x10 == 0)
-						return 0;
-					break;
-					
-				// 0000 1000
-				case 4:
-					if(data[byteIndex] & 0x8 == 0)
-						return 0;
-					break;
-					
-				// 0000 0100
-				case 5:
-					if(data[byteIndex] & 0x4 == 0)
-						return 0;
-					break;
-					
-				// 0000 0010
-				case 6:
-					if(data[byteIndex] & 0x2 == 0)
-						return 0;
-					break;
-					
-				// 0000 0001
-				case 7:
-					if(data[byteIndex] & 0x1 == 0)
-						return 0;
-					break;
-			}
-			
-			return 1;
-		}
+	    
+	    /**
+	     * @Override
+	     *	Breaks up the single dimension bit array and prints it as a 16x16
+	     *  array of 1's and 0's
+	     */
+	    public String toString(){
+	    	String s = "";    	
+	    		
+	    	for(int i = 0; i < 256; i++){
+	    		if(data.get(i))
+	    			s += "1";
+	    		else
+	    			s += "0";
+	    		
+	    		if(i % 16 == 15)
+	    			s += "\n";
+	    	}
+	    	
+	    	return s;
+	    }
 	}
 }
 
