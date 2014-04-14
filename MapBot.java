@@ -1,6 +1,8 @@
 import lejos.nxt.*;
 import lejos.nxt.addon.*;
 import lejos.util.Delay;
+import java.util.BitSet;
+import java.awt.Point;
 
 public class MapBot{
 	
@@ -9,6 +11,7 @@ public class MapBot{
 	private static NXTRegulatedMotor motorLeft, motorRight;
 	
 	Node start, current;
+	Point position;
 	
 	public MapBot(){
 		ultrasonic = new UltrasonicSensor(SensorPort.S1);
@@ -18,43 +21,59 @@ public class MapBot{
 				
 		start = new Node();
 		current = start;
+		
+		position = new Point(16, 8);
 	}
 	
 	public void search(){
-		while(!Button.ESCAPE.isDown()) {
-			forward();
-			turnLeft();
-		}
+		/*while(!Button.ESCAPE.isDown()) {
+			System.out.println(ultrasonic.getRange());
+		}*/
+		
+		System.out.println(ultrasonic.getRange());
+		
+		Delay.msDelay(3000);
+		
+		forward();
+		
+		System.out.println(ultrasonic.getRange());
+		
+		Delay.msDelay(3000);
+		
+		
 	}
 
 	public void turnLeft(){
 		motorLeft.backward();
 		motorRight.forward();
 		
-		Delay.msDelay(1440);
+		int initialPos = motorLeft.getTachoCount();
+		while(motorLeft.getTachoCount() - initialPos < 533);
 		
-		motorLeft.stop();
-		motorRight.stop();
+		motorLeft.stop(true);
+		motorRight.stop(true);
 	}
 	
 	public void turnRight(){
 		motorLeft.forward();
 		motorRight.backward();
 		
-		Delay.msDelay(1440);
+		int initialPos = motorLeft.getTachoCount();
+		while(motorLeft.getTachoCount() - initialPos < 533);
 		
-		motorLeft.stop();
-		motorRight.stop();
+		motorLeft.stop(true);
+		motorRight.stop(true);
 	}
 	
 	public void forward(){
 		motorLeft.forward();
 		motorRight.forward();
+			
+		int initialDist = motorLeft.getTachoCount();
+		while(motorLeft.getTachoCount() - initialDist < 2000); //moves 55 pixels
 		
-		Delay.msDelay(2000);
-		
-		motorLeft.stop();
-		motorRight.stop();
+		motorLeft.stop(true);
+		motorRight.stop(true);
 	}
 	
 	public static void main(String[] args){
@@ -77,7 +96,7 @@ public class MapBot{
 		/**
 		 *	Simple method to get the single dimensional index from x, y values
 		 */
-		public static int getIndex(int x, int y){
+		public int getIndex(int x, int y){
 			return x * 16 + y;
 		}
 	    
