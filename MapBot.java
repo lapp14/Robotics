@@ -3,12 +3,14 @@ import lejos.nxt.addon.*;
 import lejos.util.Delay;
 import java.util.BitSet;
 import java.awt.Point;
+import javax.microedition.lcdui.Graphics;
 
 public class MapBot{
 	
 	private static UltrasonicSensor ultrasonic;
 	private static CompassHTSensor compass;
 	private static NXTRegulatedMotor motorLeft, motorRight;
+	private static Graphics graphics;
 	
 	Node start, current;
 	Point position;
@@ -18,11 +20,38 @@ public class MapBot{
 		compass = new CompassHTSensor(SensorPort.S4);
 		motorLeft = new NXTRegulatedMotor(MotorPort.C);
 		motorRight = new NXTRegulatedMotor(MotorPort.A);
+		graphics = new Graphics();
 				
 		start = new Node();
 		current = start;
 		
 		position = new Point(16, 8);
+		
+		for(int i = 0; i < 16; i++){
+			current.data.set(current.getIndex(i, 0));
+			current.data.set(current.getIndex(i, 1));
+			current.data.set(current.getIndex(i, 15));
+		}
+		
+		current.up = current;
+		current.left = new Node();
+		current.left.left = new Node();
+		current.right = new Node();
+		current.right.right = new Node();
+		
+		for(int i = 0; i < 16; i++){
+			current.left.data.set(current.getIndex(i, 7));
+			current.left.data.set(current.getIndex(i, 8));
+			current.left.left.data.set(current.getIndex(i, 7));
+			current.left.left.data.set(current.getIndex(i, 9));
+		}
+		
+		for(int i = 0; i < 16; i++){
+			current.right.data.set(current.getIndex(i, 3));
+			current.right.data.set(current.getIndex(i, 13));
+			current.right.right.data.set(current.getIndex(i, 2));
+			current.right.right.data.set(current.getIndex(i, 14));
+		}
 	}
 	
 	public void search(){
@@ -30,17 +59,62 @@ public class MapBot{
 			System.out.println(ultrasonic.getRange());
 		}*/
 		
-		System.out.println(ultrasonic.getRange());
+		/*System.out.println(ultrasonic.getRange());
 		
 		Delay.msDelay(3000);
 		
 		forward();
 		
-		System.out.println(ultrasonic.getRange());
-		
+		System.out.println(ultrasonic.getRange());*/
+		drawScreen();
 		Delay.msDelay(3000);
 		
 		
+		
+	}
+	
+	/**
+	 *	Screen origin is top left and is 100x64
+	 *	Tiles are drawn onto the screen and their position is the top left corner
+	 */
+	public void drawScreen(){
+		graphics.clear();
+		
+		Node n = current;
+		
+		for(int y = 48; y >= 0; y -= 16){
+			drawTile(n, 46, y); //center
+			
+			Node temp = n;
+				
+			for(int x = 30; x > -16; x -= 16)
+				if(temp.left != null){
+					temp = temp.left;
+					drawTile(temp, x, y); //draw left from current
+				}
+				
+			temp = n;
+					
+			for(int x = 62; x < 100; x += 16)
+				if(temp.right != null){
+					temp = temp.right;
+					drawTile(temp, x, y); //draw right from current
+				}
+			
+			if(n.up != null)
+				n = n.up;
+		}
+		
+	}
+		
+	public void drawTile(Node tile, int x, int y){
+			
+		for(int i = 0; i < 16; i++){
+			for(int j = 0; j < 16; j++){
+				if(tile.data.get(tile.getIndex(i, j)))
+					graphics.drawLine(i + x, j + y, i + x, j + y);	
+			}					
+		}
 	}
 
 	public void turnLeft(){
@@ -83,7 +157,7 @@ public class MapBot{
 	class Node{
 		
 		public BitSet data;
-		public Node north, south, east, west;
+		public Node up, down, left, right;
 		
 		/**
 		 *	The Bitset represents a 16x16 array of bits, in a single dimension
@@ -97,7 +171,7 @@ public class MapBot{
 		 *	Simple method to get the single dimensional index from x, y values
 		 */
 		public int getIndex(int x, int y){
-			return x * 16 + y;
+			return y * 16 + x;
 		}
 	    
 	    /**
