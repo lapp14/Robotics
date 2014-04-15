@@ -7,27 +7,23 @@ import javax.microedition.lcdui.Graphics;
 
 public class MapBot{
 	
-	private static UltrasonicSensor ultrasonic;
-	private static CompassHTSensor compass;
-	private static NXTRegulatedMotor motorLeft, motorRight;
 	private static Graphics graphics;
+	
+	Robot robot;
 	public final int SCALE = 8;
 	
 	Node current;
 	Point position;
 	
 	public MapBot(){
-		ultrasonic = new UltrasonicSensor(SensorPort.S1);
-		compass = new CompassHTSensor(SensorPort.S4);
-		motorLeft = new NXTRegulatedMotor(MotorPort.C);
-		motorRight = new NXTRegulatedMotor(MotorPort.A);
 		graphics = new Graphics();
+		
+		robot = new Robot();
 				
 		start = new Node();
 		current = start;
 		
 		position = new Point(0, 0);
-		
 		
 	}
 	
@@ -50,18 +46,7 @@ public class MapBot{
 	}
 	
 	public void look(){
-		int range = ultrasonic.getDistance();
-		Node n = current;
-		
-		for(int i = 0; i < (int)(range / 16); i++){
-			if(n.up == null)
-				n.up = new Node();
-				
-			n = n.up;
-		}
-		
-		for(int i = 0; i < 16; i++)
-			n.data.set(n.getIndex(i, range % 16));
+		int range = robot.getDistance();
 	}
 
 	
@@ -108,51 +93,6 @@ public class MapBot{
 					graphics.drawLine(i + x - position.x, j + y - position.y, i + x - position.x, j + y - position.y);	
 			}					
 		}
-	}
-
-	public void turnLeft(){
-		motorLeft.backward();
-		motorRight.forward();
-		
-		int initialPos = motorLeft.getTachoCount();
-		while(motorLeft.getTachoCount() - initialPos < 533);
-		
-		motorLeft.stop(true);
-		motorRight.stop(true);
-	}
-	
-	public void turnRight(){
-		motorLeft.forward();
-		motorRight.backward();
-		
-		int initialPos = motorLeft.getTachoCount();
-		while(motorLeft.getTachoCount() - initialPos < 533);
-		
-		motorLeft.stop(true);
-		motorRight.stop(true);
-	}
-	
-	public void forward(int ticks){
-		motorLeft.forward();
-		motorRight.forward();
-			
-		int initialDist = motorLeft.getTachoCount();
-		while(motorLeft.getTachoCount() - initialDist < (36 * ticks)); //2000 moves 55 pixels
-		
-		//based on direction
-		position.x += ticks;
-		
-		if(position.x >= 16){
-			position.x %= 16;
-			
-			if(current.up == null)
-				current.up = new Node();
-				
-			current = current.up;
-		}
-		
-		motorLeft.stop(true);
-		motorRight.stop(true);
 	}
 	
 	public static void main(String[] args){

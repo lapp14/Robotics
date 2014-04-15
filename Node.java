@@ -19,12 +19,12 @@ public class Node {
 	 **/
 	
 	public Node(){
-		data = new BitSet(512);
+		data = new BitSet(1024);
 		position = new Point(0, 0);
 	}
 	
 	public Node(int posX, int posY){
-		data = new BitSet(512);
+		data = new BitSet(1024);
 		position = new Point(posX, posY);
 	}
 	   
@@ -35,7 +35,7 @@ public class Node {
     public String toString(){
     	String s = "";    	
     		
-    	for(int i = 0; i < 512; i++){
+    	for(int i = 0; i < 1024; i++){
     		if(data.get(i))
     			s += "1";
     		else
