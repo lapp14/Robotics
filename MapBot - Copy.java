@@ -13,7 +13,7 @@ public class MapBot{
 	private static Graphics graphics;
 	public final int SCALE = 8;
 	
-	Node current;
+	Node start, current;
 	Point position;
 	
 	public MapBot(){
@@ -159,6 +159,46 @@ public class MapBot{
 		new MapBot().search();
 	}
 	
-	
+	class Node{
+		
+		public BitSet data;
+		public Node up, down, left, right;
+		
+		/**
+		 *	The Bitset represents a 16x16 array of bits, in a single dimension
+		 **/
+		
+		public Node(){
+			data = new BitSet(256);
+		}
+		
+		/**
+		 *	Simple method to get the single dimensional index from x, y values
+		 */
+		public int getIndex(int x, int y){
+			return y * 16 + x;
+		}
+	    
+	    /**
+	     * @Override
+	     *	Breaks up the single dimension bit array and prints it as a 16x16
+	     *  array of 1's and 0's
+	     */
+	    public String toString(){
+	    	String s = "";    	
+	    		
+	    	for(int i = 0; i < 256; i++){
+	    		if(data.get(i))
+	    			s += "1";
+	    		else
+	    			s += "0";
+	    		
+	    		if(i % 16 == 15)
+	    			s += "\n";
+	    	}
+	    	
+	    	return s;
+	    }
+	}
 }
 
