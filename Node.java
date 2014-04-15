@@ -12,6 +12,7 @@ public class Node {
 
     public BitSet data;
 	public Node up, down, left, right;
+	public Point position;
 	
 	/**
 	 *	The Bitset represents a 32X32 array of bits
@@ -19,6 +20,12 @@ public class Node {
 	
 	public Node(){
 		data = new BitSet(512);
+		position = new Point(0, 0);
+	}
+	
+	public Node(int posX, int posY){
+		data = new BitSet(512);
+		position = new Point(posX, posY);
 	}
 	   
 	public static int getIndex(int x, int y){
@@ -42,7 +49,7 @@ public class Node {
     }
 	
 	public void addLeft(){
-		Node n = new Node();
+		Node n = new Node(position.x - 1, position.y);
 		
 		this.left = n;
 		n.right = this;
@@ -81,7 +88,7 @@ public class Node {
 	}
 	
 	public void addRight(){
-		Node n = new Node();
+		Node n = new Node(position.x + 1, position.y);
 		
 		this.right = n;
 		n.left = this;
@@ -113,6 +120,84 @@ public class Node {
 					if(this.down.right.right.up != null){
 						this.down.right.right.up.left = n;
 						n.right = this.down.right.right.up;
+					}
+				}
+			}
+		}
+	}
+	
+	public void addUp(){
+		Node n = new Node(position.x, position.y - 1);
+		
+		this.up = n;
+		n.down = this;
+		
+		//check for node to the right
+		if(this.right != null){
+			if(this.right.up != null){
+				this.right.up.left = n;
+				n.right = this.right.up;
+			
+				//check for node on other side from right
+				if(this.right.up.up != null){
+					if(this.right.up.up.left != null){
+						this.right.up.up.left.down = n;
+						n.up = this.right.up.up.left;
+					}
+				}
+			}
+		}
+		
+		//check for node to the left
+		if(this.left != null){
+			if(this.left.up != null){
+				this.left.up.right = n;
+				n.left = this.left.up;
+				
+				//check for node on other side from left
+				if(this.left.up.up != null){
+					if(this.left.up.up.right != null){
+						this.left.up.up.right.down = n;
+						n.up = this.left.up.up.right;
+					}
+				}
+			}
+		}
+	}
+	
+	public void addDown(){
+		Node n = new Node(position.x, position.y + 1);
+		
+		this.down = n;
+		n.up = this;
+		
+		//check for node to the right
+		if(this.right != null){
+			if(this.right.down != null){
+				this.right.down.left = n;
+				n.right = this.right.down;
+			
+				//check for node on other side from right
+				if(this.right.down.down != null){
+					if(this.right.down.down.left != null){
+						this.right.down.down.left.up = n;
+						n.down = this.right.down.down.left;
+					}
+				}
+			}
+		}
+		
+		//check for node to the left
+		if(this.left != null){
+			if(this.left.down != null){
+				this.left.down.right = n;
+				n.left = this.left.down;
+				
+				//check for node on other side from left
+				if(this.left.down.down != null){
+					if(this.left.down.down.right != null){
+						this.left.down.down.right.up = n;
+						n.down = this.left.down.down.right;
 					}
 				}
 			}
