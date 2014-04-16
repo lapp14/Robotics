@@ -14,6 +14,9 @@ public class Node {
 	public Node up, down, left, right;
 	public Point position;
 	
+	public static void main(String[] args){
+	}
+	
 	/**
 	 *	The Bitset represents a 32X32 array of bits
 	 **/

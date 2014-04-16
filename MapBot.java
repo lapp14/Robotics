@@ -1,48 +1,55 @@
 import lejos.nxt.*;
-import lejos.nxt.addon.*;
 import lejos.util.Delay;
 import java.util.BitSet;
-import java.awt.Point;
 import javax.microedition.lcdui.Graphics;
 
 public class MapBot{
 	
 	private static Graphics graphics;
+	public final int COLLISION_DIST = 25;
 	
 	Robot robot;
 	public final int SCALE = 8;
 	
 	Node current;
-	Point position;
 	
 	public MapBot(){
 		graphics = new Graphics();
 		
 		robot = new Robot();
 				
-		start = new Node();
-		current = start;
-		
-		position = new Point(0, 0);
+		current = new Node();
 		
 	}
 	
 	public void search(){
-		/*while(!Button.ESCAPE.isDown()) {
-			look();
-			drawScreen();
-		}*/
-		
-		Delay.msDelay(2000);
-		look();
-		drawScreen();
-		
-		forward(5);
-		
-		look();
-		drawScreen();
-		
-		Delay.msDelay(5000);
+		while(!Button.ESCAPE.isDown()) {		
+			if(robot.getDistance() <= COLLISION_DIST){
+				//avoid obstacle
+				robot.turnLeft();
+				
+				boolean obstacle = true;
+				
+				while(obstacle){
+					if(robot.getDistance() <= COLLISION_DIST)
+						break;
+				
+					for(int i = 0; i < 18 && robot.getDistance() > COLLISION_DIST; i++)
+						robot.forward(1);
+					
+					robot.turnRight();
+					
+					if(robot.getDistance() > COLLISION_DIST)
+						obstacle = false;
+					else
+						robot.turnLeft();
+				}
+				
+			}else{
+			
+				robot.forward(1);
+			}
+		}
 	}
 	
 	public void look(){
@@ -89,8 +96,9 @@ public class MapBot{
 			
 		for(int i = 0; i < 16; i++){
 			for(int j = 0; j < 16; j++){
-				if(tile.data.get(tile.getIndex(i, j)))
-					graphics.drawLine(i + x - position.x, j + y - position.y, i + x - position.x, j + y - position.y);	
+				if(tile.data.get(tile.getIndex(i, j))){
+				//	graphics.drawLine(i + x - position.x, j + y - position.y, i + x - position.x, j + y - position.y);
+				}
 			}					
 		}
 	}
