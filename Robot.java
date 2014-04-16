@@ -1,5 +1,6 @@
 import lejos.nxt.*;
 import lejos.util.Delay;
+import java.util.LinkedList;
 
 /**
  * @(#)Robot.java
@@ -18,6 +19,8 @@ public class Robot {
 	Point position;
 	Point screenPosition;
   	Direction direction;
+	LinkedList<Direction> collisions;
+	
     
     public Robot(){
     	
@@ -25,7 +28,9 @@ public class Robot {
 		motorLeft = new NXTRegulatedMotor(MotorPort.C);
 		motorRight = new NXTRegulatedMotor(MotorPort.A);
     	
+		collisions = new LinkedList<Direction>();
     	position = new Point(-16, -30);
+		
     	direction = Direction.UP;
     }
     
@@ -33,6 +38,15 @@ public class Robot {
     public int getDistance(){
     	return ultrasonic.getDistance();
     }
+	
+	public void collision(){
+		collisions.add(0, direction);
+		
+		if(collisions.size() == 5)
+			collisions.remove(4);
+		
+		System.out.println(direction + " " + collisions.size());
+	}
     
     public void turnLeft(){	
 		motorLeft.stop(true);

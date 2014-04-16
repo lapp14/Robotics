@@ -9,7 +9,4 @@
 
 public enum Direction {
     UP, DOWN, LEFT, RIGHT;
-	
-	public static void main(String[] args){
-	}
 }

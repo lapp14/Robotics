@@ -5,40 +5,65 @@ import javax.microedition.lcdui.Graphics;
 
 public class MapBot{
 	
-	private static Graphics graphics;
 	public final int COLLISION_DIST = 25;
-	
-	Robot robot;
 	public final int SCALE = 8;
 	
+	private static Graphics graphics;
+	
+	Robot robot;
 	Node current;
+	boolean mapping;
 	
 	public MapBot(){
 		graphics = new Graphics();
 		
 		robot = new Robot();
-				
 		current = new Node();
+		mapping = true;		
+	}
+	
+	public void waitForUser(){
+		// Button listener for ESCAPE to quit program
+		Button.ESCAPE.addButtonListener(new ButtonListener(){
+			public void buttonPressed(Button b){
+				System.exit(0);
+			}
+			
+			public void buttonReleased(Button b){}
+		});
 		
+		System.out.println("Press ENTER to start\nPress ESCAPE to quit");
+		
+		//wait for user to start program
+		while(!Button.ENTER.isDown());
+		
+		LCD.clear();
+		
+		// Button listener for ESCAPE to quit program
+		Button.ENTER.addButtonListener(new ButtonListener(){
+			public void buttonPressed(Button b){
+				mapping = false;
+			}
+			
+			public void buttonReleased(Button b){}
+		});
+
 	}
 	
 	public void search(){
-		while(true) {
-			if(Button.ESCAPE.isDown())
-				System.exit(0);
-		
+		while(mapping) {		
 			if(robot.getDistance() <= COLLISION_DIST){
 			
 				//avoid obstacle
+				robot.collision();
 				robot.turnLeft();
 				
 				/* wall following loop */
-				while(true){
-					if(Button.ESCAPE.isDown())
-						System.exit(0);
+				while(mapping){
 					for(int i = 0; i < 18; i++){
 						if(robot.getDistance() <= COLLISION_DIST){
 							//if collision
+							robot.collision();
 							robot.turnLeft();
 							i = -1; //restart loop at 0
 						}
@@ -48,6 +73,7 @@ public class MapBot{
 					robot.turnRight();
 					
 					if(robot.getDistance() <= COLLISION_DIST){
+						robot.collision();
 						robot.turnLeft();
 					}
 				}
@@ -110,7 +136,12 @@ public class MapBot{
 	}
 	
 	public static void main(String[] args){
-		new MapBot().search();
+		MapBot bot = new MapBot();
+		bot.waitForUser();
+		bot.search();
+		
+		//after user stops mapping, wait for ESCAPE press to end program
+		while(true);
 	}
 	
 	
