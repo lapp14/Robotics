@@ -23,30 +23,36 @@ public class MapBot{
 	}
 	
 	public void search(){
-		while(!Button.ESCAPE.isDown()) {		
+		while(true) {
+			if(Button.ESCAPE.isDown())
+				System.exit(0);
+		
 			if(robot.getDistance() <= COLLISION_DIST){
+			
 				//avoid obstacle
 				robot.turnLeft();
 				
-				boolean obstacle = true;
-				
-				while(obstacle){
-					if(robot.getDistance() <= COLLISION_DIST)
-						break;
-				
-					for(int i = 0; i < 18 && robot.getDistance() > COLLISION_DIST; i++)
+				/* wall following loop */
+				while(true){
+					if(Button.ESCAPE.isDown())
+						System.exit(0);
+					for(int i = 0; i < 18; i++){
+						if(robot.getDistance() <= COLLISION_DIST){
+							//if collision
+							robot.turnLeft();
+							i = -1; //restart loop at 0
+						}
 						robot.forward(1);
+					}
 					
 					robot.turnRight();
 					
-					if(robot.getDistance() > COLLISION_DIST)
-						obstacle = false;
-					else
+					if(robot.getDistance() <= COLLISION_DIST){
 						robot.turnLeft();
+					}
 				}
 				
-			}else{
-			
+			} else {
 				robot.forward(1);
 			}
 		}
