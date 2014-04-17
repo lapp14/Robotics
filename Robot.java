@@ -48,7 +48,26 @@ public class Robot {
     }
 	
 	public void collision(){
-					
+		if(direction == Direction.UP) {
+			for(int i = -9; i < 10; i++)
+				if(screenPosition.x + i >= 0 && <= 99)
+					current.data.set(current.getIndex(screenPosition.x + i, screenPosition.y));
+			
+		} else if(direction == Direction.LEFT) {
+			for(int i = -9; i < 10; i++)
+				if(screenPosition.y + i >= 0 && <= 63)
+					current.data.set(current.getIndex(screenPosition.x, screenPosition.y + i));
+				
+		} else if(direction == Direction.RIGHT) {
+			for(int i = -9; i < 10; i++)
+				if(screenPosition.y + i >= 0 && <= 63)
+					current.data.set(current.getIndex(screenPosition.x, screenPosition.y + i));
+				
+		} else { //DOWN
+			for(int i = -9; i < 10; i++)
+				if(screenPosition.x + i >= 0 && <= 99)
+					current.data.set(current.getIndex(screenPosition.x + i, screenPosition.y));
+		}
 	}
 		
 	public boolean stuckInCycle(){
@@ -151,28 +170,28 @@ public class Robot {
 			
 			if(current.right == null)
 				current.addRight();
-			System.out.println("changing right");
+				
 			current = current.right;
 		} else if(screenPosition.x < 0) {
 			screenPosition.x += 100;
 			
 			if(current.left == null)
 				current.addLeft();
-			System.out.println("changing left");
+				
 			current = current.left;
 		} else if(screenPosition.y > 63) {
 			screenPosition.y -= 64;
 			
 			if(current.down == null)
 				current.addDown();
-			System.out.println("changing down");
+				
 			current = current.down;
 		} else if(screenPosition.y < 0) {
 			screenPosition.y += 64;
 			
 			if(current.up == null)
 				current.addUp();
-			System.out.println("changing up");
+				
 			current = current.up;
 		} else {
 		

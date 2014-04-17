@@ -9,10 +9,12 @@ public class MapBot{
 	public final int SCALE = 8;
 	
 	Robot robot;
+	Screen screen;
 	boolean mapping;
 	
 	public MapBot(){
 		robot = new Robot();
+		screen = new Screen();
 		mapping = true;		
 	}
 	
@@ -65,21 +67,24 @@ public class MapBot{
 					
 					if(robot.stuckInCycle())
 						break;
-						
-					System.out.println(robot.getCurrentNode().position);
-						
+												
 					robot.turnRight();
 					
 					if(robot.frontDistance() <= COLLISION_DIST){
 						robot.collision();
 						robot.turnLeft();
 					}
+					
+					screen.drawNode(robot.getCurrentNode());
 				}
 				
 			} else {
 				robot.forward(1);
 			}
 		}
+		
+		//draw final screen
+		screen.drawNode(robot.getCurrentNode());
 	}
 		
 	public static void main(String[] args){
