@@ -11,14 +11,12 @@ public class MapBot{
 	private static Graphics graphics;
 	
 	Robot robot;
-	Node current;
 	boolean mapping;
 	
 	public MapBot(){
 		graphics = new Graphics();
 		
 		robot = new Robot();
-		current = new Node();
 		mapping = true;		
 	}
 	
@@ -37,7 +35,7 @@ public class MapBot{
 		//wait for user to start program
 		while(!Button.ENTER.isDown());
 		
-		LCD.clear();
+		graphics.clear();
 		
 		// Button listener for ESCAPE to quit program
 		Button.ENTER.addButtonListener(new ButtonListener(){
@@ -76,6 +74,8 @@ public class MapBot{
 						robot.collision();
 						robot.turnLeft();
 					}
+					System.out.println(robot.position.x + ", " + robot.position.y);
+					drawScreen();
 				}
 				
 			} else {
@@ -95,41 +95,16 @@ public class MapBot{
 	 */
 	public void drawScreen(){
 		graphics.clear();
-		
-		Node n = current;
-		
-		for(int y = 48; y >= 0; y -= 16){
-			drawTile(n, 46, y); //center
-			
-			Node temp = n;
 				
-			for(int x = 30; x > -16; x -= 16)
-				if(temp.left != null){
-					temp = temp.left;
-					drawTile(temp, x, y); //draw left from current
-				}
-				
-			temp = n;
-					
-			for(int x = 62; x < 100; x += 16)
-				if(temp.right != null){
-					temp = temp.right;
-					drawTile(temp, x, y); //draw right from current
-				}
-			
-			if(n.up != null)
-				n = n.up;
-			else
-				break;
-		}
+		drawTile(robot.getCurrentNode(), 0, 0);
 	}
 		
 	public void drawTile(Node tile, int x, int y){
 			
-		for(int i = 0; i < 16; i++){
-			for(int j = 0; j < 16; j++){
+		for(int i = 0; i < 32; i++){
+			for(int j = 0; j < 32; j++){
 				if(tile.data.get(tile.getIndex(i, j))){
-				//	graphics.drawLine(i + x - position.x, j + y - position.y, i + x - position.x, j + y - position.y);
+					graphics.drawLine(i + x, j + y, i + x, j + y);
 				}
 			}					
 		}

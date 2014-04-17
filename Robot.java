@@ -21,6 +21,7 @@ public class Robot {
   	Direction direction;
 	LinkedList<Direction> collisions;
 	
+	Node current;
     
     public Robot(){
     	
@@ -32,6 +33,7 @@ public class Robot {
     	position = new Point(-16, -30);
 		
     	direction = Direction.UP;
+		current = new Node();
     }
     
     
@@ -44,8 +46,11 @@ public class Robot {
 		
 		if(collisions.size() == 5)
 			collisions.remove(4);
-		
-		System.out.println(direction + " " + collisions.size());
+					
+	}
+	
+	public Node getCurrentNode(){
+		return current;
 	}
     
     public void turnLeft(){	
