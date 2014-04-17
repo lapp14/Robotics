@@ -50,22 +50,22 @@ public class Robot {
 	public void collision(){
 		if(direction == Direction.UP) {
 			for(int i = -9; i < 10; i++)
-				if(screenPosition.x + i >= 0 && <= 99)
+				if(screenPosition.x + i >= 0 && screenPosition.x + i <= 99)
 					current.data.set(current.getIndex(screenPosition.x + i, screenPosition.y));
 			
 		} else if(direction == Direction.LEFT) {
 			for(int i = -9; i < 10; i++)
-				if(screenPosition.y + i >= 0 && <= 63)
+				if(screenPosition.y + i >= 0 && screenPosition.y + i <= 63)
 					current.data.set(current.getIndex(screenPosition.x, screenPosition.y + i));
 				
 		} else if(direction == Direction.RIGHT) {
 			for(int i = -9; i < 10; i++)
-				if(screenPosition.y + i >= 0 && <= 63)
+				if(screenPosition.y + i >= 0 && screenPosition.y + i <= 63)
 					current.data.set(current.getIndex(screenPosition.x, screenPosition.y + i));
 				
 		} else { //DOWN
 			for(int i = -9; i < 10; i++)
-				if(screenPosition.x + i >= 0 && <= 99)
+				if(screenPosition.x + i >= 0 && screenPosition.x + i <= 99)
 					current.data.set(current.getIndex(screenPosition.x + i, screenPosition.y));
 		}
 	}
