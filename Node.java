@@ -13,6 +13,7 @@ public class Node {
     public BitSet data;
 	public Node up, down, left, right;
 	public Point position;
+	public int timesVisited;
 	
 	public static void main(String[] args){
 	}

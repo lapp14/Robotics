@@ -14,39 +14,56 @@ import java.util.LinkedList;
 public class Robot {
 	
 	private static NXTRegulatedMotor motorLeft, motorRight;
-	private static UltrasonicSensor ultrasonic;
+	private static UltrasonicSensor ultrasonicFront;
+	private static UltrasonicSensor ultrasonicRight;
 	
 	Point position;
 	Point screenPosition;
   	Direction direction;
-	LinkedList<Direction> collisions;
+	LinkedList<Point> positions;
 	
 	Node current;
     
     public Robot(){
     	
-		ultrasonic = new UltrasonicSensor(SensorPort.S1);
+		ultrasonicFront = new UltrasonicSensor(SensorPort.S1);
+		ultrasonicRight = new UltrasonicSensor(SensorPort.S4);
 		motorLeft = new NXTRegulatedMotor(MotorPort.C);
 		motorRight = new NXTRegulatedMotor(MotorPort.A);
     	
-		collisions = new LinkedList<Direction>();
+		positions = new LinkedList<Point>();
     	position = new Point(50, 50);
+		screenPosition = new Point(50, 50);
 		
     	direction = Direction.UP;
 		current = new Node();
     }
     
-    
-    public int getDistance(){
-    	return ultrasonic.getDistance();
+    public int frontDistance(){
+    	return ultrasonicFront.getDistance();
+    }
+	
+    public int rightDistance(){
+    	return ultrasonicRight.getDistance();
     }
 	
 	public void collision(){
-		collisions.add(0, direction);
-		
-		if(collisions.size() == 5)
-			collisions.remove(4);
 					
+	}
+		
+	public boolean stuckInCycle(){
+		for(int i = 0; i < positions.size(); i++)
+			if(positions.get(i).x == position.x && positions.get(i).y == position.y){
+				System.out.println("Cycle" + positions.get(i));
+				return true;
+			}
+			
+		positions.add(0, new Point(position.x, position.y));
+		
+		if(positions.size() > 16)
+			positions.remove(positions.size() - 1);
+		
+		return false;
 	}
 	
 	public Node getCurrentNode(){
@@ -108,17 +125,58 @@ public class Robot {
 		int initialDist = motorLeft.getTachoCount();
 		while(motorLeft.getTachoCount() - initialDist < (36 * ticks)); //2000 moves 55 pixels
 		
-		if(direction == Direction.UP)
+		if(direction == Direction.UP){
 			position.y -= ticks;
-		else if(direction == Direction.LEFT)
+			screenPosition.y -= ticks;
+		} else if(direction == Direction.LEFT){
 			position.x -= ticks;
-		else if(direction == Direction.DOWN)
+			screenPosition.x -= ticks;
+		} else if(direction == Direction.DOWN) {
 			position.y += ticks;
-		else
+			screenPosition.y += ticks;
+		} else {
 			position.x += ticks;
-				
+			screenPosition.x += ticks;
+		}
+		
 		motorLeft.stop(true);
 		motorRight.stop(true);
+		
+		checkCurrentNode();
+	}
+	
+	public void checkCurrentNode(){
+		if(screenPosition.x > 99) {
+			screenPosition.x -= 100;
+			
+			if(current.right == null)
+				current.addRight();
+			System.out.println("changing right");
+			current = current.right;
+		} else if(screenPosition.x < 0) {
+			screenPosition.x += 100;
+			
+			if(current.left == null)
+				current.addLeft();
+			System.out.println("changing left");
+			current = current.left;
+		} else if(screenPosition.y > 63) {
+			screenPosition.y -= 64;
+			
+			if(current.down == null)
+				current.addDown();
+			System.out.println("changing down");
+			current = current.down;
+		} else if(screenPosition.y < 0) {
+			screenPosition.y += 64;
+			
+			if(current.up == null)
+				current.addUp();
+			System.out.println("changing up");
+			current = current.up;
+		} else {
+		
+		}
 	}
 	
 	public static void main(String[] args){
