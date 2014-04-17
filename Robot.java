@@ -30,7 +30,7 @@ public class Robot {
 		motorRight = new NXTRegulatedMotor(MotorPort.A);
     	
 		collisions = new LinkedList<Direction>();
-    	position = new Point(-16, -30);
+    	position = new Point(50, 50);
 		
     	direction = Direction.UP;
 		current = new Node();

@@ -18,33 +18,33 @@ public class Node {
 	}
 	
 	/**
-	 *	The Bitset represents a 32X32 array of bits
+	 *	The Bitset represents a 100X64 array of bits, representing the nxt screen
 	 **/
 	
 	public Node(){
-		data = new BitSet(1024);
+		data = new BitSet(6400);
 		position = new Point(0, 0);
 	}
 	
 	public Node(int posX, int posY){
-		data = new BitSet(1024);
+		data = new BitSet(6400);
 		position = new Point(posX, posY);
 	}
 	   
 	public static int getIndex(int x, int y){
-		return x * 32 + y;
+		return x * 100 + y;
 	}
     
     public String toString(){
     	String s = "";    	
     		
-    	for(int i = 0; i < 1024; i++){
+    	for(int i = 0; i < 6400; i++){
     		if(data.get(i))
     			s += "1";
     		else
     			s += "0";
     		
-    		if(i % 32 == 31)
+    		if(i % 100 == 99)
     			s += "\n";
     	}
     	
