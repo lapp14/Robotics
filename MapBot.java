@@ -6,7 +6,6 @@ import javax.microedition.lcdui.Graphics;
 public class MapBot{
 	
 	public final int COLLISION_DIST = 23;
-	public final int SCALE = 8;
 	
 	Robot robot;
 	Screen screen;
@@ -22,26 +21,69 @@ public class MapBot{
 		// Button listener for ESCAPE to quit program
 		Button.ESCAPE.addButtonListener(new ButtonListener(){
 			public void buttonPressed(Button b){
-				System.exit(0);
+				if(!mapping){
+					if(robot.current.down != null){
+						robot.current = robot.current.down;
+						screen.drawNode(robot.getCurrent());
+					}					
+				} else {
+					System.exit(0);
+				}
 			}
 			
 			public void buttonReleased(Button b){}
 		});
 		
-		System.out.println("Press ENTER to start\nPress ESCAPE to quit");
+		Button.LEFT.addButtonListener(new ButtonListener(){
+			public void buttonPressed(Button b){
+				if(!mapping){
+					if(robot.current.left != null){
+						robot.current = robot.current.left;
+						screen.drawNode(robot.getCurrent());
+					}
+				} else {
+					System.exit(0);
+				}
+			}
+			
+			public void buttonReleased(Button b){}
+		});
 		
-		//wait for user to start program
-		while(!Button.ENTER.isDown());
-				
+		Button.RIGHT.addButtonListener(new ButtonListener(){
+			public void buttonPressed(Button b){
+				if(!mapping){
+					if(robot.current.right != null){
+						robot.current = robot.current.right;
+						screen.drawNode(robot.getCurrent());
+					}
+				} else {
+					System.exit(0);
+				}
+			}
+			
+			public void buttonReleased(Button b){}
+		});
+		
 		// Button listener for ESCAPE to quit program
 		Button.ENTER.addButtonListener(new ButtonListener(){
 			public void buttonPressed(Button b){
-				mapping = false;
+				if(mapping)
+					mapping = false;
+				else{
+					if(robot.current.up != null){
+						robot.current = robot.current.up;
+						screen.drawNode(robot.getCurrent());
+					}
+				}
 			}
 			
 			public void buttonReleased(Button b){}
 		});
 
+		System.out.println("Press ENTER to start\nPress ESCAPE to quit");
+		
+		//wait for user to start program
+		while(!Button.ENTER.isDown());		
 	}
 	
 	public void search(){

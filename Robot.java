@@ -22,7 +22,7 @@ public class Robot {
   	Direction direction;
 	LinkedList<Point> positions;
 	
-	Node current;
+	public Node current;
     
     public Robot(){
     	
