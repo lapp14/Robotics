@@ -48,26 +48,7 @@ public class Robot {
     }
 	
 	public void collision(){
-		if(direction == Direction.UP) {
-			for(int i = -9; i < 10; i++)
-				if(screenPosition.x + i >= 0 && screenPosition.x + i <= 99)
-					current.data.set(current.getIndex(screenPosition.x + i, screenPosition.y));
-			
-		} else if(direction == Direction.LEFT) {
-			for(int i = -9; i < 10; i++)
-				if(screenPosition.y + i >= 0 && screenPosition.y + i <= 63)
-					current.data.set(current.getIndex(screenPosition.x, screenPosition.y + i));
-				
-		} else if(direction == Direction.RIGHT) {
-			for(int i = -9; i < 10; i++)
-				if(screenPosition.y + i >= 0 && screenPosition.y + i <= 63)
-					current.data.set(current.getIndex(screenPosition.x, screenPosition.y + i));
-				
-		} else { //DOWN
-			for(int i = -9; i < 10; i++)
-				if(screenPosition.x + i >= 0 && screenPosition.x + i <= 99)
-					current.data.set(current.getIndex(screenPosition.x + i, screenPosition.y));
-		}
+		current.points.add(new Point(screenPosition.x, screenPosition.y));
 	}
 		
 	public boolean stuckInCycle(){
@@ -102,6 +83,7 @@ public class Robot {
 		
 		motorLeft.stop(true);
 		motorRight.stop(true);
+		Delay.msDelay(150);
 		
 		if(direction == Direction.UP)
 			direction = Direction.LEFT;
@@ -126,6 +108,7 @@ public class Robot {
 		
 		motorLeft.stop(true);
 		motorRight.stop(true);
+		Delay.msDelay(150);
 		
 		if(direction == Direction.UP)
 			direction = Direction.RIGHT;
@@ -166,31 +149,55 @@ public class Robot {
 	
 	public void checkCurrentNode(){
 		if(screenPosition.x > 99) {
+			current.points.add(new Point(99, screenPosition.y));
 			screenPosition.x -= 100;
 			
-			if(current.right == null)
+			if(current.right == null){
 				current.addRight();
-				
+				current.right.points.add(new Point(0, screenPosition.y));
+			} else {
+				current.right.points.add(new Point(-1, -1));
+				current.right.points.add(new Point(0, screenPosition.y));
+			}
 			current = current.right;
+			
 		} else if(screenPosition.x < 0) {
+			current.points.add(new Point(0, screenPosition.y));
 			screenPosition.x += 100;
 			
-			if(current.left == null)
+			if(current.left == null){
 				current.addLeft();
-				
+				current.left.points.add(new Point(99, screenPosition.y));
+			} else {
+				current.left.points.add(new Point(-1, -1));
+				current.left.points.add(new Point(99, screenPosition.y));
+			}	
 			current = current.left;
+			
 		} else if(screenPosition.y > 63) {
+			current.points.add(new Point(screenPosition.x, 63));
 			screenPosition.y -= 64;
 			
-			if(current.down == null)
+			if(current.down == null){
 				current.addDown();
+				current.down.points.add(new Point(screenPosition.x, 0));
+			} else {
+				current.down.points.add(new Point(-1, -1));
+				current.down.points.add(new Point(screenPosition.x, 0));
+			}
 				
 			current = current.down;
 		} else if(screenPosition.y < 0) {
+			current.points.add(new Point(screenPosition.x, 0));
 			screenPosition.y += 64;
 			
-			if(current.up == null)
+			if(current.up == null){
 				current.addUp();
+				current.up.points.add(new Point(screenPosition.x, 63));
+			} else {
+				current.up.points.add(new Point(-1, -1));
+				current.up.points.add(new Point(screenPosition.x, 63));
+			}
 				
 			current = current.up;
 		} else {

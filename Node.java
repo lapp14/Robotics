@@ -6,47 +6,33 @@
  * @version 1.00 2014/4/13
  */
 
-import java.util.BitSet;
+import java.util.LinkedList;
 
 public class Node {
 
-    public BitSet data;
+    public LinkedList<Point> points;
 	public Node up, down, left, right;
 	public Point position;
 	public int timesVisited;
 	
 	public static void main(String[] args){
 	}
-	
-	/**
-	 *	The Bitset represents a 100X64 array of bits, representing the nxt screen
-	 **/
-	
+		
 	public Node(){
-		data = new BitSet(6400);
+		points = new LinkedList<Point>();
 		position = new Point(0, 0);
 	}
 	
 	public Node(int posX, int posY){
-		data = new BitSet(6400);
+		points = new LinkedList<Point>();
 		position = new Point(posX, posY);
-	}
-	   
-	public static int getIndex(int x, int y){
-		return x * 100 + y;
 	}
     
     public String toString(){
     	String s = "";    	
     		
-    	for(int i = 0; i < 6400; i++){
-    		if(data.get(i))
-    			s += "1";
-    		else
-    			s += "0";
-    		
-    		if(i % 100 == 99)
-    			s += "\n";
+    	for(int i = 0; i < points.size(); i++){
+    		s += points.get(i);
     	}
     	
     	return s;

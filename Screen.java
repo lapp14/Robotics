@@ -1,21 +1,21 @@
-import lejos.nxt.*;
+import javax.microedition.lcdui.Graphics;
 
 public class Screen{
-	public static final int BLACK = 1;
+	Graphics g;
 	
 	public Screen(){
+		g = new Graphics();
+		g.setColor(Graphics.BLACK);
 	}
 	
 	public void drawNode(Node n){
-		LCD.clear();
+		g.clear();
 	
-		for(int i = 0; i < 100; i++){
-			for(int j = 0; j < 64; j++){
-				if(n.data.get(n.getIndex(i, j)))
-					LCD.setPixel(i, j, BLACK);
-					
+		if(n.points.size() > 1)
+			for(int i = 0; i < n.points.size() - 1; i++){
+				if(n.points.get(i).x >= 0 && n.points.get(i + 1).x >= 0)
+					g.drawLine(n.points.get(i).x, n.points.get(i).y, n.points.get(i + 1).x, n.points.get(i + 1).y);					
 			}
-		}
 	}
 	
 	public static void main(String[] args){
