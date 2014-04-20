@@ -21,11 +21,15 @@ public class MapBot{
 		// Button listener for ESCAPE to quit program
 		Button.ESCAPE.addButtonListener(new ButtonListener(){
 			public void buttonPressed(Button b){
+				//press ENTER and ESCAPE to exit program
+				if(Button.ENTER.isDown())
+					System.exit(0);
+					
 				if(!mapping){
 					if(robot.current.down != null){
 						robot.current = robot.current.down;
-						screen.drawNode(robot.getCurrent());
-					}					
+						screen.drawNode(robot.getCurrentNode());
+					}
 				} else {
 					System.exit(0);
 				}
@@ -39,10 +43,8 @@ public class MapBot{
 				if(!mapping){
 					if(robot.current.left != null){
 						robot.current = robot.current.left;
-						screen.drawNode(robot.getCurrent());
+						screen.drawNode(robot.getCurrentNode());
 					}
-				} else {
-					System.exit(0);
 				}
 			}
 			
@@ -54,25 +56,32 @@ public class MapBot{
 				if(!mapping){
 					if(robot.current.right != null){
 						robot.current = robot.current.right;
-						screen.drawNode(robot.getCurrent());
+						screen.drawNode(robot.getCurrentNode());
 					}
-				} else {
-					System.exit(0);
 				}
 			}
 			
 			public void buttonReleased(Button b){}
 		});
 		
+		System.out.println("Press ENTER to start\nPress ESCAPE to quit");
+		
+		//wait for user to start program
+		while(!Button.ENTER.isDown());
+				
 		// Button listener for ESCAPE to quit program
 		Button.ENTER.addButtonListener(new ButtonListener(){
 			public void buttonPressed(Button b){
+				//Press ENTER and ESCAPE to quit program
+				if(Button.ESCAPE.isDown())
+					System.exit(0);
+			
 				if(mapping)
 					mapping = false;
 				else{
 					if(robot.current.up != null){
 						robot.current = robot.current.up;
-						screen.drawNode(robot.getCurrent());
+						screen.drawNode(robot.getCurrentNode());
 					}
 				}
 			}
@@ -80,10 +89,6 @@ public class MapBot{
 			public void buttonReleased(Button b){}
 		});
 
-		System.out.println("Press ENTER to start\nPress ESCAPE to quit");
-		
-		//wait for user to start program
-		while(!Button.ENTER.isDown());		
 	}
 	
 	public void search(){
