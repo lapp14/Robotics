@@ -111,10 +111,7 @@ public class MapBot{
 						}
 						robot.forward(1);
 					}
-					
-					//if(robot.stuckInCycle())
-					//	break;
-												
+																	
 					robot.turnRight();
 					
 					if(robot.frontDistance() <= COLLISION_DIST){
