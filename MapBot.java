@@ -3,13 +3,21 @@ import lejos.util.Delay;
 import java.util.BitSet;
 import javax.microedition.lcdui.Graphics;
 
+/**
+ * @(#)MapBot.java
+ *	Main class that does all the navigation. Controls the Robot class
+ *
+ * @author Dan Lapp
+ * @version 1.00 2014/4/15
+ */
+
 public class MapBot{
 	
 	public final int COLLISION_DIST = 23;
 	
-	Robot robot;
-	Screen screen;
-	boolean mapping;
+	Robot robot; //the instance of the robot
+	Screen screen; //the instance of our lcd graphics
+	boolean mapping; //is the robot conducting mapping
 	
 	public MapBot(){
 		robot = new Robot();
@@ -17,6 +25,10 @@ public class MapBot{
 		mapping = true;		
 	}
 	
+	/**
+	 * Waits for the user to press enter before starting mapping. Adds
+	 * action listeners and behaviour to all 4 NXT buttons
+	 */
 	public void waitForUser(){
 		// Button listener for ESCAPE to quit program
 		Button.ESCAPE.addButtonListener(new ButtonListener(){
@@ -91,34 +103,37 @@ public class MapBot{
 
 	}
 	
+	/**
+	 * Conducts the actual navigation and mapping
+	 */
 	public void search(){
 		while(mapping) {		
+			//search for an object to map
 			if(robot.frontDistance() <= COLLISION_DIST){
-			
-				//avoid obstacle
-				robot.collision();
+				robot.collision(); //add map point
 				robot.turnLeft();
 				
 				/* wall following loop */
 				while(mapping){
-				
+					//move forward a bit
 					for(int i = 0; i < 18; i++){
 						if(robot.frontDistance() <= COLLISION_DIST){
 							//if collision
-							robot.collision();
+							robot.collision(); //add map point
 							robot.turnLeft();
 							i = -1; //restart loop at 0
 						}
 						robot.forward(1);
 					}
-																	
+					
+					//check to see if wall is still to the right of the bot
 					robot.turnRight();
 					
 					if(robot.frontDistance() <= COLLISION_DIST){
-						robot.collision();
+						robot.collision(); //add map point
 						robot.turnLeft();
 					} else 
-						robot.collision();
+						robot.collision(); //add map point
 				}
 				
 			} else {
@@ -129,13 +144,16 @@ public class MapBot{
 		//draw final screen
 		screen.drawNode(robot.getCurrentNode());
 	}
-		
+	
+	/**
+	 * Program entry point
+	 */
 	public static void main(String[] args){
 		MapBot bot = new MapBot();
 		bot.waitForUser();
 		bot.search();
 		
-		//after user stops mapping, wait for ESCAPE press to end program
+		//after user stops mapping, wait for ESCAPE+ENTER press to end program
 		while(true);
 	}
 	

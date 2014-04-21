@@ -1,8 +1,11 @@
 /**
  * @(#)Node.java
+ *	Representation of a single NXT screen of map data. Stores a list
+ * 	of points that are used to draw lines. Each node is linked to adjacent
+ *	Nodes to the left, right, up and down. These are used to scroll between
+ *	screens to view map data on the NXT screen
  *
- *
- * @author 
+ * @author Dan Lapp
  * @version 1.00 2014/4/13
  */
 
@@ -10,24 +13,43 @@ import java.util.LinkedList;
 
 public class Node {
 
-    public LinkedList<Point> points;
-	public Node up, down, left, right;
-	public Point position;
-	public int timesVisited;
+    public LinkedList<Point> points; //collision points
+	public Node up, down, left, right; //adjacent nodes
 	
+	/* Position of the node in relation to other nodes. The start node
+	 *	is (0, 0), the one to the right is (1, 0), the one below is
+	 *	(0, 1), etc
+	 */
+	public Point position;
+	
+	public int timesVisited; //number of times the node has been visited
+	
+	//required by NXJ for some reason
 	public static void main(String[] args){
 	}
-		
+	
+	/**
+	 * Initialization of the first node when mapping starts
+	 */
 	public Node(){
 		points = new LinkedList<Point>();
 		position = new Point(0, 0);
 	}
 	
+	/**
+	 *	Initialization at some other point
+	 *	@param posX x position of the new Node
+	 *	@param posY y position of the new Node
+	 */
 	public Node(int posX, int posY){
 		points = new LinkedList<Point>();
 		position = new Point(posX, posY);
 	}
     
+	/**
+	 *	Prints the list out for testing purposes as a list of points
+	 *	@return list of points that are in points
+	 */
     public String toString(){
     	String s = "";    	
     		
@@ -38,6 +60,10 @@ public class Node {
     	return s;
     }
 	
+	/**
+	 * Adds a node to the left of this one, and updates all pointers adjacent
+	 *	to the new Node
+	 */
 	public void addLeft(){
 		Node n = new Node(position.x - 1, position.y);
 		
@@ -77,6 +103,10 @@ public class Node {
 		}
 	}
 	
+	/**
+	 * Adds a node to the right of this one, and updates all pointers adjacent
+	 *	to the new Node
+	 */
 	public void addRight(){
 		Node n = new Node(position.x + 1, position.y);
 		
@@ -116,6 +146,10 @@ public class Node {
 		}
 	}
 	
+	/**
+	 * Adds a node above this one, and updates all pointers adjacent
+	 *	to the new Node
+	 */
 	public void addUp(){
 		Node n = new Node(position.x, position.y - 1);
 		
@@ -155,6 +189,10 @@ public class Node {
 		}
 	}
 	
+	/**
+	 * Adds a node below this one, and updates all pointers adjacent
+	 *	to the new Node
+	 */
 	public void addDown(){
 		Node n = new Node(position.x, position.y + 1);
 		
